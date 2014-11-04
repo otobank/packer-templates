@@ -1,0 +1,12 @@
+---
+
+- name: Setup app server
+  user: otobank
+  hosts: all
+
+  roles:
+    - mysql
+    - memcached
+    - nginx
+    - php
+

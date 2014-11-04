@@ -1,0 +1,115 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "/install.amd/vmlinuz<wait>",
+        " auto=true<wait>",
+        " netcfg/get_domain={{ .Name }}.host.otobank.biz<wait>",
+        " netcfg/get_hostname={{ .Name }}<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<wait>",
+        " vga=788<wait>",
+        " initrd=/install.amd/initrd.gz<wait>",
+        " -- quiet<wait>",
+        "<enter><wait>"
+      ],
+      "disk_size": 15360,
+      "guest_os_type": "Debian_64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "0b31bccccb048d20b551f70830bb7ad0",
+      "iso_checksum_type": "md5",
+      "iso_urls": [
+        "http://ftp.jaist.ac.jp/debian-cd/7.7.0/amd64/iso-cd/debian-7.7.0-amd64-netinst.iso",
+        "http://cdimage.debian.org/debian-cd/7.7.0/amd64/iso-cd/debian-7.7.0-amd64-netinst.iso"
+      ],
+      "shutdown_command": "echo 'passw0rd' | sudo -S shutdown -h now",
+      "ssh_password": "passw0rd",
+      "ssh_port": 22,
+      "ssh_username": "otobank",
+      "ssh_wait_timeout": "7200s",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          512
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          1
+        ]
+      ]
+    },
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "/install.amd/vmlinuz<wait>",
+        " auto=true<wait>",
+        " netcfg/get_domain={{ .Name }}.host.otobank.biz<wait>",
+        " netcfg/get_hostname={{ .Name }}<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<wait>",
+        " vga=788<wait>",
+        " initrd=/install.amd/initrd.gz<wait>",
+        " -- quiet<wait>",
+        "<enter><wait>"
+      ],
+      "disk_size": 15360,
+      "guest_os_type": "Debian7-64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "0b31bccccb048d20b551f70830bb7ad0",
+      "iso_checksum_type": "md5",
+      "iso_urls": [
+        "http://ftp.jaist.ac.jp/debian-cd/7.7.0/amd64/iso-cd/debian-7.7.0-amd64-netinst.iso",
+        "http://cdimage.debian.org/debian-cd/7.7.0/amd64/iso-cd/debian-7.7.0-amd64-netinst.iso"
+      ],
+      "shutdown_command": "echo 'passw0rd' | sudo -S shutdown -h now",
+      "ssh_password": "passw0rd",
+      "ssh_port": 22,
+      "ssh_username": "otobank",
+      "ssh_wait_timeout": "7200s",
+      "type": "vmware-iso"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "only": [
+        "virtualbox-iso"
+      ]
+    },
+    {
+      "type": "ovftool",
+      "only": [
+        "vmware-iso"
+      ],
+      "format": "ova"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'passw0rd' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "inline": [
+        "echo 'otobank ALL=NOPASSWD:ALL' > /etc/sudoers.d/otobank",
+        "apt-get -y update",
+        "apt-get install -y python-pip python-dev",
+        "pip install ansible"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/app-server.yml",
+      "role_paths": [
+        "ansible/roles/mysql",
+        "ansible/roles/memcached",
+        "ansible/roles/nginx",
+        "ansible/roles/php"
+      ]
+    }
+  ]
+}

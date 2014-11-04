@@ -1,0 +1,29 @@
+---
+  - name: php5 is installed
+    action: apt pkg={{ item }} state=present
+    sudo: yes
+    with_items:
+      - php5
+      - php5-cli
+      - php5-common
+      - php5-curl
+      - php5-fpm
+      - php5-gd
+      - php5-imagick
+      - php5-intl
+      - php5-memcached
+      - php5-mysqlnd
+      - php5-sqlite
+
+  - name: Copy date.ini fpm
+    copy: src=date.ini dest=/etc/php5/fpm/conf.d/00-date.ini group=root owner=root
+    sudo: yes
+
+  - name: Copy date.ini cli
+    copy: src=date.ini dest=/etc/php5/cli/conf.d/00-date.ini group=root owner=root
+    sudo: yes
+
+  - name: Start php-fpm service
+    service: name="php5-fpm" state=started enabled=true
+    ignore_errors: yes
+    sudo: yes

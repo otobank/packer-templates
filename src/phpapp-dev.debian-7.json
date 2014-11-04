@@ -1,0 +1,24 @@
+{
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'passw0rd' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "inline": [
+        "echo 'otobank ALL=NOPASSWD:ALL' > /etc/sudoers.d/otobank",
+        "apt-get -y update",
+        "apt-get install -y python-pip python-dev",
+        "pip install ansible"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/phpapp-dev.yml",
+      "role_paths": [
+        "ansible/roles/mysql",
+        "ansible/roles/memcached",
+        "ansible/roles/nginx",
+        "ansible/roles/php"
+      ]
+    }
+  ]
+}

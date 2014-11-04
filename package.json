@@ -1,0 +1,29 @@
+{
+  "name": "otobank-packer-templates",
+  "version": "0.1.0",
+  "description": "Packer templates by OTOBANK Inc.",
+  "main": "packer",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/otobank/packer-templates"
+  },
+  "keywords": [
+    "Packer"
+  ],
+  "author": "Keisuke SATO <ksato@otobank.co.jp>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/otobank/packer-templates/issues"
+  },
+  "homepage": "https://github.com/otobank/packer-templates",
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "gulp": "^3.8.10",
+    "gulp-extend": "^0.2.0",
+    "gulp-multi-extend": "0.0.1",
+    "gulp-rename": "^1.2.0"
+  }
+}
